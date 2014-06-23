@@ -1,0 +1,53 @@
+This implements a basic neural network, and some code for training it
+against a supplied dataset.  This was a project for my Machine Learning
+class at UTK with Dr. Parker in Fall 2010.
+
+# Running
+To compile code, and train the network do:
+
+	./Summers-Project1 train
+
+To test the network on files, do one of:
+
+	$ ./Summers-Project1 test test-grid/c300 test-grid/c316
+	$ ./Summers-Project1 test # Interactive
+
+To build everything (The code, the parsed data, the random weights,
+the trained weights, and the pdf for the writeup).  Do the following.
+
+	$ export PATH=$PATH:/usr/lib/plan9/bin
+	$ mk
+
+# Implementation
+## Programs
+There are four main programs: 'nn', 'parse', 'init' and 'train.tcl'.
+The primary source file for each starts with brief descriptions of what
+they are for.
+
+## Design of 'nn'
+In 'nn', I use mmap() to open the weights file.  This way I can share
+memory between multiple 'nn' processes running on the same weights file.
+The point is so that I can do all of the crap-programming in a different
+language (Tcl).  This simplifies the scope of the C code a lot because it
+doesn't have to worry about different training strategies or maintaining
+information about previous epochs.  All we know is there's some data
+and some weights.  We can run data through the network, we can do
+back-propagation, and we can be asked questions about the error-values
+of the last epoch; nothing else.
+
+## File Formats
+### Weights File
+This file is an array of doubles.  The first three doubles form a header
+which is the numbers of input, hidden, and output nodes respectively.
+We'll call these three values I, H, and O.  After that there are two
+column-major matrices.  The first is (I+1)*H and the second is (H+1)*O.
+The last element in every column is the weight for the bias node.
+Note that each column of the matrix corresponds to the weights for all
+edges going into a single node.
+
+### Data File
+This file is an array of bytes.  There is a two-byte header with the
+number of input and output nodes (I and O).   After the header, the file
+is a sequence of datasets.  Each dataset is an array of bytes for the
+inputs, then an array of bytes for the outputs.  Therefor a dataset is
+I+O bytes big.

@@ -1,0 +1,15 @@
+:TODO: Make a much smaller dataset for debugging
+	- 'parse' should take two additional arguments
+		- number of inputs
+		- number of outputs
+
+:TODO: Test heavily on small dataset
+:TODO: Momentum
+:TODO: Calculate errors per output-unit
+	In addition to the error for the whole network.
+
+:TODO: Cleanup C code
+:TODO: Use troff instead of latex
+:TODO: Use grap instead of gnuplot
+:TODO: Stop using stupid names for the main script.
+:TODO: Cleanup README

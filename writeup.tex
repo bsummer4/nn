@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\begin{document}
+\section{Network Structure and Parameters}
+\paragraph{}
+I used 96 input nodes with inputs taken directly from the input files,
+so each input has a value of 0 or 1.  I used 16 hidden nodes, had 10
+output nodes, and used 0.1 for the learning rate.  All weights were
+initialized to random doubles in the range $[-0.05, 0.05]$.
+
+\paragraph{}
+I tried various values for the learning rate.  Higher learning rates did
+not affect the accuracy or the training time much, but it did produce
+noisier-looking curves on the error-graphs.  Somewhat lower learning rates
+had very similar outcomes as did a rate of 0.1.  Much lower learning rates
+(around 0.01) had very smooth-looking graphs, but it took a much larger
+number of epochs to train and had worse accuracy.  I suspect that the
+lower accuracy is caused by the effects of overfitting happening earlier
+in the curve.
+
+\paragraph{}
+I also tried various values for the number of hidden nodes.  Values below
+16 had worse accuracy, and values below 8 had very poor accuracy.  Values
+above 16 had similar accuracies to 16 but took much longer to train.
+
+\paragraph{}
+I did not experiment with multiple hidden layers or momentum.
+
+\section{Results}
+\paragraph{}
+The network converged much faster than I was expecting.  The network
+generally converges at around 40 or 50 epochs.  I suspect that this is
+a pretty easy dataset to train for.
+
+\paragraph{}
+There also wasn't nearly as much overfitting as I expected.  The network
+error climbs very slowly after the network converges.  I ran the network
+for 20000 epochs to see if I could get more dramatic overfitting, but
+the network error continued to rise very slowly.
+
+\subsection{Accuracy}
+\input{table.tex}
+
+\subsection{Network Error}
+\includegraphics[width=1\textwidth]{network-error.eps}
+
+\subsection{Node Error}
+\includegraphics[width=1\textwidth]{node-error.eps}
+
+\end{document}

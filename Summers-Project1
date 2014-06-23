@@ -1,0 +1,57 @@
+#!/bin/sh
+
+pre=./data
+tmp=$(mktemp)
+prompt='input>'
+
+warn () { echo $* >/dev/stderr; }
+err () { warn $*; exit 1; }
+usage () {
+	echo "usage -- One of these forms:"
+	echo "	$0 test"
+	echo "	$0 test file file ..."
+	echo "	$0 train"
+	exit 1; }
+
+train () {
+	echo training ...
+	rm -f weights.trained
+	mk train; echo done; }
+
+testfile () {
+	mk nn parse 2>/dev/null >/dev/null
+	fn=$1
+	f=$pre/$fn
+	if [ ! -e "$f" ]; then warn $f doesn\'t exist; return; fi
+	./parse $f > $tmp
+	{ echo epoch; echo totalaccuracy; } |
+		./nn weights.trained $tmp |
+		sed -u '/done/d;s/^1.*/Correct/;s/^0.*/Incorrect/' |
+		sed -u "s,^,On $fn\, we were ,;s/$/./";
+	rm $tmp; }
+
+test () {
+	fmt <<!
+Testing ...
+
+To test the neural net, enter the names of images at the prompt.
+An example image name is: 'test-grid/c300'
+!
+  while echo -n $prompt ''; read fn; do testfile $fn; done
+	echo; }
+
+
+
+mk nn init parse 2>/dev/null >/dev/null
+
+case $1 in
+	train) train;;
+	test)
+		if [ ! -e weights.trained ]
+		then err The network has not been 'trained!'; fi
+		case $# in
+			1) test;;
+			*) shift; for x in $*; do testfile $x; done;;
+		esac;;
+	*) usage;;
+esac
